@@ -1,0 +1,18 @@
+{
+    "extends": [
+        "airbnb"
+    ],
+    "rules": {
+        "linebreak-style": ["error", "windows"],
+        "indent": 0,
+        "no-tabs": 0,
+        "class-methods-use-this": "off",
+        "no-restricted-syntax": "off",
+        "max-classes-per-file": "off",
+        "lines-between-class-members": "off"
+    },
+    "env": {
+        "node": true,
+        "mocha": true
+    }
+}
