@@ -19,10 +19,10 @@ const setupServer = () => {
     app.use(httpContext.middleware);
     // Correlation Id assigner
     app.use(correlationIdAssigner);
-    // Error handlers middlewares
-    app.use(errorHandler);
     // Routers middlewares
     app.use('/', baseRouter);
+    // Error handlers middlewares
+    app.use(errorHandler);
     // Start listening...
     app.listen(PORT, () => {
         logger.info(`Authorization-App is listening on port: ${PORT} ...`);

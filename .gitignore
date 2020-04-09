@@ -3,3 +3,4 @@
 .vscode
 lib/
 .nyc_output/
+config/

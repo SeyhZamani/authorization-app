@@ -8,6 +8,7 @@ const logger = createLogger({
     format: format.combine(
         format.label({ label: path.basename(process.mainModule.filename) }),
         format.colorize(),
+        format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
         format.printf((info) => {
             const correlationId = httpContext.get('correlationId') || '###NO REQ ID###';
             return `${moment(info.timestamp).utc().format('YYYY-MM-DD HH:mm:ss')} ${correlationId} ${info.level} [${info.label}]: ${info.message}`;
