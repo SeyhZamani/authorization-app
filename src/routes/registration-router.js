@@ -1,12 +1,17 @@
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
+const moment = require('moment');
+const avro = require('avsc');
 const { routerWrapper } = require('../utils/express-util');
 const UserRepository = require('../repositories/user-repository');
-const { generateBearerToken } = require('../services/token-service');
+const { generateAccessToken } = require('../services/token-service');
 const logger = require('../utils/logger');
+const kafkaService = require('../services/kafka-service');
+const kafkaTopics = require('../models/kafka-topics');
+const userCreatedSchema = require('../models/kafka-schemas/user-created-schema');
 
 const { ACCESS_TOKEN_EXPIRATION: expiration } = process.env;
-
+const type = avro.parse(userCreatedSchema);
 
 router.post('/', routerWrapper(async (req, res) => {
     logger.info('Starting process of registration');
@@ -15,7 +20,15 @@ router.post('/', routerWrapper(async (req, res) => {
     const { SALT_ROUND: saltRound } = process.env;
     const passHash = await bcrypt.hash(password, parseInt(saltRound, 10));
     const user = await userRepo.create(email, passHash);
-    const token = generateBearerToken(user);
+    await kafkaService.sendMessage([{
+        topic: kafkaTopics.USER_CREATED,
+        messages: type.toBuffer({
+            id: user.getID(),
+        }),
+        attributes: 1,
+        timestamp: moment.utc(),
+    }]);
+    const token = generateAccessToken(user);
     return res.status(200).json({
         access_token: token,
         token_type: 'bearer',

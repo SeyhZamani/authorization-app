@@ -30,7 +30,7 @@ DataBase.initDB = () => {
             password,
             user,
         },
-        debug: true,
+        debug: false,
     });
 };
 

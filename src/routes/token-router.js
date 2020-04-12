@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const { routerWrapper } = require('../utils/express-util');
-const { generateBearerToken } = require('../services/token-service');
+const { generateAccessToken } = require('../services/token-service');
 const AuthorizationError = require('../models/exceptions/authorization-exception');
 const logger = require('../utils/logger');
 
@@ -15,7 +15,7 @@ router.post('/', routerWrapper(async (req, res, next) => {
     if (!result) {
         return next(new AuthorizationError('Authorization failed'));
     }
-    const token = generateBearerToken(user);
+    const token = generateAccessToken(user);
     return res.status(200).json({
         access_token: token,
         token_type: 'bearer',

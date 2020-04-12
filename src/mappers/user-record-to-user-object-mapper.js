@@ -8,7 +8,7 @@ const mapToUser = (record) => {
         email,
         pass_hash,
         create_time,
-        update_time
+        update_time,
     } = record;
     return new User(id, email, pass_hash, create_time, update_time);
 };
