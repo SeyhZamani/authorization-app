@@ -4,7 +4,7 @@ const moment = require('moment');
 const avro = require('avsc');
 const { routerWrapper } = require('../utils/express-util');
 const UserRepository = require('../repositories/user-repository');
-const { generateAccessToken } = require('../services/token-service');
+const { generateAccessToken, generateRefreshToken } = require('../services/token-service');
 const logger = require('../utils/logger');
 const kafkaService = require('../services/kafka-service');
 const kafkaTopics = require('../models/kafka-topics');
@@ -28,9 +28,11 @@ router.post('/', routerWrapper(async (req, res) => {
         attributes: 1,
         timestamp: moment.utc(),
     }]);
-    const token = generateAccessToken(user);
+    const accessToken = await generateAccessToken(user);
+    const refreshToken = await generateRefreshToken(user);
     return res.status(200).json({
-        access_token: token,
+        access_token: accessToken,
+        refresh_token: refreshToken,
         token_type: 'bearer',
         expires_in: expiration,
     });

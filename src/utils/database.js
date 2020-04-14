@@ -14,12 +14,12 @@ const DataBase = {};
 DataBase.getDB = () => {
     logger.info('Getting DB');
     if (typeof DataBase.db === 'undefined') {
-        DataBase.initDB();
+        throw new Error('Uninitialize database error!');
     }
     return DataBase.db;
 };
 
-DataBase.initDB = () => {
+DataBase.init = () => {
     logger.info('Initalize DB');
     DataBase.db = knex({
         client: 'pg',
@@ -34,18 +34,18 @@ DataBase.initDB = () => {
     });
 };
 
-DataBase.disconnect = (cb = (_) => _) => {
+DataBase.disconnect = () => {
     logger.info('Disconnect DB');
     if (typeof DataBase.db !== 'undefined') {
-        return DataBase.db.destroy(cb);
+        return DataBase.db.destroy();
     }
     throw new Error('Disconnection error!');
 };
 
-DataBase.authenticate = (cb = (_) => _) => {
+DataBase.authenticate = () => {
     logger.info('Autenticate DB');
     if (typeof DataBase.db !== 'undefined') {
-        return DataBase.db.raw('SELECT 1+1 as Result').then(cb);
+        return DataBase.db.raw('SELECT 1+1 as Result');
     }
     throw new Error('Authentication error!');
 };
