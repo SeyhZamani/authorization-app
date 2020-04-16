@@ -1,4 +1,5 @@
 const kafka = require('kafka-node');
+const { promisify } = require('util');
 const logger = require('../utils/logger');
 
 exports.create = () => new Promise((resolve, reject) => {
@@ -15,4 +16,5 @@ exports.create = () => new Promise((resolve, reject) => {
         logger.error(err);
         return reject(err);
     });
+    producer.closeAsync = promisify(producer.client.close).bind(producer.client);
 });

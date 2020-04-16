@@ -19,8 +19,8 @@ DataBase.getDB = () => {
     return DataBase.db;
 };
 
-DataBase.init = () => {
-    logger.info('Initalize DB');
+DataBase.init = () => new Promise((resolve, _) => {
+    logger.info('*******DB is initiating********');
     DataBase.db = knex({
         client: 'pg',
         connection: {
@@ -32,7 +32,9 @@ DataBase.init = () => {
         },
         debug: false,
     });
-};
+    return resolve(DataBase.db);
+});
+
 
 DataBase.disconnect = () => {
     logger.info('Disconnect DB');

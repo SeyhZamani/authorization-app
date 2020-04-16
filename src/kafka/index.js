@@ -1,4 +1,5 @@
 const playerCreatedProducer = require('./producer');
+
 const logger = require('../utils/logger');
 
 let producer;
@@ -14,4 +15,9 @@ exports.getProducer = () => {
         throw new Error('producer hase not been created yet!');
     }
     return producer;
+};
+
+exports.disconnect = async () => {
+    logger.info('Kafka disconnecting');
+    await producer.closeAsync();
 };

@@ -11,7 +11,7 @@ const {
 const Cache = {};
 
 Cache.init = () => new Promise((resolve, reject) => {
-    logger.info('Initializeing Redis');
+    logger.info('*******Redis is initiating********');
     Cache.client = redis.createClient({
         host: REDIS_HOST,
         port: REDIS_PORT,
@@ -53,16 +53,15 @@ Cache.disconnect = () => new Promise((resolve, reject) => {
 Cache.authenticate = () => new Promise((resolve, reject) => {
     logger.info('Autenticate cache');
     if (typeof Cache.client !== 'undefined') {
-        Cache.client.auth(REDIS_PASSWORD, (err) => {
+        return Cache.client.auth(REDIS_PASSWORD, (err) => {
             if (err) {
                 logger.error(err);
                 return reject(err);
             }
             return resolve(Cache.client);
         });
-    } else {
-        return reject(new Error('Authentication error!'));
     }
+    return reject(new Error('Authentication error!'));
 });
 
 

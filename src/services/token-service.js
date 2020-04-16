@@ -12,14 +12,13 @@ const {
 const privateKey = fs.readFileSync(path.resolve(__dirname, '../../config/private.pem'));
 
 
-const generateAccessToken = (user) => new Promise((resolve, reject) => {
-    if (!user || !user.getID()) {
-        return reject(new Error('System can not generate access-token with undefined id'));
+const generateAccessToken = (userId) => new Promise((resolve, reject) => {
+    if (!userId) {
+        return reject(new Error('System can not generate access-token with undefined userId'));
     }
-    const id = user.getID();
     logger.info('Generating access token...');
     return jwt.sign({
-        userId: id,
+        userId,
         exp: Math.floor(Date.now() / 1000) + (parseInt(ACCESS_TOKEN_EXPIRATION, 10)),
     }, privateKey, { algorithm: 'RS256' }, (err, token) => {
         if (err) {
@@ -29,36 +28,14 @@ const generateAccessToken = (user) => new Promise((resolve, reject) => {
     });
 });
 
-const regenerateRefreshToken = (refreshToken) => new Promise((resolve, reject) => {
-    if (!refreshToken) {
-        return reject(new Error('System can not re-generate refres-token with undefined refreshToken'));
-    }
-    const client = cacheAdapter.getClient();
-    const newRefreshToken = uuidv4();
-    return client.get(refreshToken, (errGet, id) => {
-        if (errGet) {
-            return reject(errGet);
-        }
-        if (!id) {
-            return reject(new Error('Unauthorized'));
-        }
-        return client.set(newRefreshToken, id, 'EX', REFRESH_TOKEN_EXPIRATION, (errSet, _) => {
-            if (errSet) {
-                return reject(errSet);
-            }
-            return resolve(newRefreshToken);
-        });
-    });
-});
 
-const generateRefreshToken = (user) => new Promise((resolve, reject) => {
-    if (!user || !user.getID()) {
-        return reject(new Error('System can not generate refresh-token with undefined id'));
+const generateRefreshToken = (userId) => new Promise((resolve, reject) => {
+    if (!userId) {
+        return reject(new Error('System can not generate refresh-token with undefined userId'));
     }
-    const id = user.getID();
     const client = cacheAdapter.getClient();
     const newRefreshToken = uuidv4();
-    return client.set(newRefreshToken, id, 'EX', REFRESH_TOKEN_EXPIRATION, (errSet, _) => {
+    return client.set(newRefreshToken, userId, 'EX', REFRESH_TOKEN_EXPIRATION, (errSet, _) => {
         if (errSet) {
             return reject(errSet);
         }
@@ -70,5 +47,4 @@ const generateRefreshToken = (user) => new Promise((resolve, reject) => {
 module.exports = {
     generateAccessToken,
     generateRefreshToken,
-    regenerateRefreshToken,
 };
