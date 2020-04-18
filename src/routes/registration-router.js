@@ -28,8 +28,8 @@ router.post('/', routerWrapper(async (req, res) => {
         attributes: 1,
         timestamp: moment.utc(),
     }]);
-    const accessToken = await generateAccessToken(user);
-    const refreshToken = await generateRefreshToken(user);
+    const accessToken = await generateAccessToken(user.getID());
+    const refreshToken = await generateRefreshToken(user.getID());
     return res.status(200).json({
         access_token: accessToken,
         refresh_token: refreshToken,
