@@ -8,13 +8,6 @@ const AuthorizationError = require('../models/exceptions/authorization-exception
 
 
 const accessTokenValidator = routerWrapper(async (req, res, next) => {
-    const {
-        grantType,
-    } = req;
-    // If grantType is not password , move to next middlware, and stop validating request
-    if (grantType !== 'password') {
-        return next();
-    }
     logger.info('Starting to validate access token request');
     const userRepo = new UserRepository();
     const {
@@ -40,8 +33,6 @@ const accessTokenValidator = routerWrapper(async (req, res, next) => {
         return next(new AuthorizationError('Authorization failed'));
     }
     req.userId = user.getID();
-
-
     return next();
 });
 

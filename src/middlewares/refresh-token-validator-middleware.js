@@ -4,13 +4,6 @@ const InvalidRequest = require('../models/exceptions/invalid-request-exception')
 const cacheAdapter = require('../utils/cache');
 
 const refreshTokenValidator = routerWrapper(async (req, res, next) => {
-    const {
-        grantType,
-    } = req;
-    // If grantType is not refresh token , move to next middlware, and stop validating request
-    if (grantType !== 'refresh_token') {
-        return next();
-    }
     logger.info('Starting to validate refresh token request');
     const {
         refresh_token: rawRefreshToken = '',
