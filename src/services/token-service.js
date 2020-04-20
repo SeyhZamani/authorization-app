@@ -9,7 +9,9 @@ const {
     REFRESH_TOKEN_EXPIRATION,
     ACCESS_TOKEN_EXPIRATION,
 } = process.env;
-const privateKey = fs.readFileSync(path.resolve(__dirname, '../../config/private.pem'));
+const privateKey = fs.readFileSync(path.resolve(__dirname, '../../config/private.pem'), {
+    encoding: 'utf8',
+});
 
 
 const generateAccessToken = (userId) => new Promise((resolve, reject) => {

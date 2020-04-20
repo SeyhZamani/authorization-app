@@ -3,11 +3,15 @@ const { promisify } = require('util');
 const logger = require('../utils/logger');
 
 exports.create = () => new Promise((resolve, reject) => {
-    const options = {
+    const clientOptions = {
         kafkaHost: process.env.KAFKA_BROKER_HOST,
     };
-    const client = new kafka.KafkaClient(options);
-    const producer = new kafka.HighLevelProducer(client);
+    const producerOptions = {
+        requireAcks: 1,
+        ackTimeoutMs: 100,
+    };
+    const client = new kafka.KafkaClient(clientOptions);
+    const producer = new kafka.HighLevelProducer(client, producerOptions);
     producer.on('ready', () => {
         logger.info('Kafka Producer is ready to send message');
         return resolve(producer);

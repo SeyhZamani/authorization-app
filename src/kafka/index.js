@@ -1,5 +1,4 @@
 const playerCreatedProducer = require('./producer');
-
 const logger = require('../utils/logger');
 
 let producer;

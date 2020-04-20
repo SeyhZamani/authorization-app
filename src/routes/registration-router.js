@@ -25,7 +25,7 @@ router.post('/', routerWrapper(async (req, res) => {
         messages: type.toBuffer({
             id: user.getID(),
         }),
-        attributes: 1,
+        attributes: 0,
         timestamp: moment.utc(),
     }]);
     const accessToken = await generateAccessToken(user.getID());
